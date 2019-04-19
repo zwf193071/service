@@ -1,8 +1,4 @@
-# lego
-
-> Inspur Network lego program
-
-> #### 前端目前不负责打包，只会交给Jenkins自动打包，只能等待向稳出包，然后拷贝dist文件夹下的文件到服务器根目录。
+# Emma service
 
 ## Build Setup
 
