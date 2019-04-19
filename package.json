@@ -1,8 +1,8 @@
 {
-  "name": "lego-ice",
-  "version": "2.0.0",
-  "description": "Inspur Network ICE program",
-  "author": "Alan Chen",
+  "name": "service",
+  "version": "0.1.0",
+  "description": "service for building",
+  "author": "Lucy Zhu",
   "private": true,
   "scripts": {
     "dev": "npm run version:dev && webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -12,7 +12,6 @@
     "version:prod": "node workFlow/versionUpdate/index.js --prod"
   },
   "dependencies": {
-    "@alanchenchen/gittask": "^0.0.6",
     "api-module": "^0.0.8",
     "ctopo": "^0.0.7",
     "echarts": "^4.0.2",
