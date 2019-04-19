@@ -1,0 +1,22 @@
+{
+  "development": {
+    "lastDate": "2019/04/09 10:22:09"
+  },
+  "production": {
+    "lastDate": "2019/04/08 09:29:43"
+  },
+  "dependencies": {
+    "@alanchenchen/gittask": "^0.0.6",
+    "api-module": "^0.0.8",
+    "ctopo": "^0.0.7",
+    "echarts": "^4.0.2",
+    "element-dataset": "^2.2.6",
+    "iview": "^3.1.4",
+    "less": "^3.9.0",
+    "less-loader": "^4.1.0",
+    "lottie-web": "^5.4.2",
+    "vue": "^2.5.2",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1"
+  }
+}
