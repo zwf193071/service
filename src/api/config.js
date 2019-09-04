@@ -7,8 +7,10 @@
 
 const serverOrigin = window.location.origin
 
-// const baseURL = 'http://10.69.65.85:8080/ice' // 朱鹏接口2
-// const baseURL = 'http://192.168.132.1:8888/ice' // 黄冈
+// const baseURL = 'http://192.168.132.1:8888/ice' // 黄冈接口
+// const baseURL = 'http://192.168.222.183:8088/ice' // 陈莹接口
+// const baseURL = 'http://192.168.222.109:8080/ice' // 朱鹏接口
+// const baseURL = 'http://192.168.222.195:8080/ice' // 朱鹏接口2
 const baseURL = serverOrigin + '/ice' //打包后请求接口前缀,自动获取location作为请求地址
  
 //接口的全局配置

@@ -4,6 +4,7 @@
  * @param {String} url 请求路径的别名，与apiConfig模块一致
  * @param {Object} data 请求内容参数
  * @param {String | Array} tips 返回数据后对response.code处理的提示语
+ * @param {Boolean} isShowError 是否弹出默认的错误提示，默认为true
  * @returns {Promise} then的参数为一个包含type和data的对象。type为returnCode中的一种
  * 
  * 1. 参数为一个对象，url和data与api模块相同，tips为成功请求和请求失败后的提示语 
@@ -36,11 +37,12 @@ const returnCode = {
     unAuthorized: '0008' // license验证失败，未授权
 }
 
-export default ({url, data, dynamicRouterParams, tips}) => {
+export default ({url, data, dynamicRouterParams, tips, isShowError=true}) => {
     const p = new Plugin() //模块加载器实例
     const Message = p.data.find(a => a.name == 'Message')
     const AutoExecutePlugins = p.data.filter(a => a.autoExecute == true) //自动执行的模块
-    
+    const isShow = isShowError === false ? false : true
+
     let successTip,failTip
     if(tips) {
         successTip = typeof tips == 'string'?tips:tips[0]
@@ -54,53 +56,73 @@ export default ({url, data, dynamicRouterParams, tips}) => {
             data,
             dynamicRouterParams
         })
-        .then(res => {
-            const type = Object.entries(returnCode).find(a => a[1] == res.data.code)[0]
-            //自动执行模块对应type的回调函数
-            AutoExecutePlugins && AutoExecutePlugins.forEach(a => {
-                a[type] && a[type](url)
-            })
-            //Message需要单独逻辑
-            if(type == 'success' || type == 'empty') {
-                if(successTip) Message.success(successTip)
-            }
-            else if(type == 'fail' || type == 'error') {
-                if(failTip) {
-                    if(typeof tips == 'string') {
-                        Message.fail(failTip,true)
-                    }
-                    else if(isTipsArray) {
-                        Message.fail(failTip)
+        .then(res => {          
+            if (res.data.code) {
+                const typeArr = Object.entries(returnCode).find(a => a[1] == res.data.code)
+                const type = typeArr ? typeArr[0] : 'error'
+                //自动执行模块对应type的回调函数
+                AutoExecutePlugins && AutoExecutePlugins.forEach(a => {
+                    a[type] && a[type](url)
+                })
+                //Message需要单独逻辑
+                if(type == 'success' || type == 'empty') {
+                    if(successTip) Message.success(successTip)
+                }
+                else if(type == 'fail' || type == 'error') {
+                    if(failTip && isShow) {
+                        if(typeof tips == 'string') {
+                            Message.fail(failTip,true)
+                        }
+                        else if(isTipsArray) {
+                            Message.fail(failTip)
+                        }
                     }
                 }
-            }
-            
-            let resData
-            const isSingleData = res.data.data && !res.data.data.resultList
-            const hasPageList = res.data.data && res.data.data.resultList && Object.keys(res.data.data).length > 1
-            const noPageList = res.data.data && res.data.data.resultList && Object.keys(res.data.data).length == 1
+                
+                let resData
+                const isSingleData = res.data.data && !res.data.data.resultList
+                const hasPageList = res.data.data && res.data.data.resultList && Object.keys(res.data.data).length > 1
+                const noPageList = res.data.data && res.data.data.resultList && Object.keys(res.data.data).length == 1
 
-            //取数据接口返回data。操作接口，只返回code
-            if(res.data.data) {
-                //没有resultList或者存在分页数据resultList，返回所有数据
-                if(isSingleData || hasPageList) {
-                    resData = res.data.data
+                //取数据接口返回data。操作接口，只返回code
+                if(res.data.data) {
+                    //没有resultList或者存在分页数据resultList，返回所有数据
+                    if(isSingleData || hasPageList) {
+                        resData = res.data.data
+                    }
+                    //没有分页数据，resultList只表示集合，返回resultList
+                    else if(noPageList) {
+                        resData = res.data.data.resultList
+                    }
                 }
-                //没有分页数据，resultList只表示集合，返回resultList
-                else if(noPageList) {
-                    resData = res.data.data.resultList
-                }
+                
+                const thenData  = {data:resData, type}
+                resolve(thenData)
+            } else {
+                let type = 'success'
+                if (res.data['error-code']) {
+                    type = 'fail'
+                    failTip && Message[type](failTip, true, res.data['error-message'])
+                } else {
+                    //自动执行模块对应type的回调函数
+                    AutoExecutePlugins && AutoExecutePlugins.forEach(a => {
+                        a[type] && a[type](url)
+                    })
+                    //Message需要单独逻辑
+                    if(successTip) Message[type](successTip)
+                }         
+                const thenData  = {data: res.data, type}
+                resolve(thenData)
             }
-            
-            const thenData  = {data:resData, type}
-            resolve(thenData)
         })
         .catch(err => {
-            Message.networkFail()
-            //自动执行模块对应networkFail的回调函数
-            AutoExecutePlugins && AutoExecutePlugins.forEach(a => {
-                a.networkFail && a.networkFail(url, err)
-            })
+            if (isShow) {
+                Message.networkFail()
+                //自动执行模块对应networkFail的回调函数
+                AutoExecutePlugins && AutoExecutePlugins.forEach(a => {
+                    a.networkFail && a.networkFail(url, err)
+                })
+            }
             reject(err)
         })
     })

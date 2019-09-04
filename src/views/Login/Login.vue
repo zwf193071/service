@@ -44,7 +44,7 @@ import { api, apiCover } from '@/api/index'
 import Storage from '@/utils/Storage'
 import lottie from 'lottie-web'
 
-const TARGET_ROUTERPATH = '/home/Dashboard' // 登陆成功跳转的路由
+const TARGET_ROUTERPATH = '/home/Region' // 登陆成功跳转的路由
 
 export default {
     name:'Login',

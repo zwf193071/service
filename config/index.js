@@ -24,9 +24,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/': {
-        // target: 'http://10.69.65.61:8888', //黄冈
-        //target:'http://172.20.62.99:8888' // 王朋虚机
-        target:'http://10.69.65.140:8888' //王朋本地
+        // target: 'http://10.17.11.162' // hpb测试
+        target: 'http://172.20.69.20:8888' // 多pod
       }
     },
 

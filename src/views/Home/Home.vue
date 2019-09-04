@@ -9,7 +9,6 @@
                     <LeftMenu />
                 </Sider>
                 <Layout>
-                    <!--<TagLink />-->
                     <Content class="content">
                         <router-view class="content--inner" />
                     </Content>
@@ -26,27 +25,25 @@
 import { api, apiCover } from '@/api/index'
 
 import TopBar from '@/views/Home/TopBar'
-// import TagLink from '@/views/Home/TagLink'
 import LeftMenu from '@/views/Home/LeftMenu/LeftMenu'
 
 export default {
     name: 'Home',
     components: {
         TopBar,
-        // TagLink,
         LeftMenu
     },
     //一加载主组件就获取设备信息到store里，方便后面所有组件使用siteNmae和siteIP
     created() {
-        apiCover({
-            url: 'GetAllDevice'
-        })
-        .then(res => {
-            if(res.type == 'success') {
-                const data = res.data
-                this.$store.commit('resetDeviceInfo',data)
-            }
-        })
+        // apiCover({
+        //     url: 'GetAllDevice'
+        // })
+        // .then(res => {
+        //     if(res.type == 'success') {
+        //         const data = res.data
+        //         this.$store.commit('resetDeviceInfo',data)
+        //     }
+        // })
     }
 }    
 </script>
