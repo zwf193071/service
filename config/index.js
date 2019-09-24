@@ -25,7 +25,7 @@ module.exports = {
     proxyTable: {
       '/': {
         // target: 'http://10.17.11.162' // hpb测试
-        target: 'http://172.20.69.20:8888' // 多pod
+        target: 'http://172.20.4.22:8181' // 向稳
       }
     },
 
